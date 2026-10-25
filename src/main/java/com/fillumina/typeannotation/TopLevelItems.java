@@ -8,7 +8,7 @@ public class TopLevelItems {
 
     private final List<@Valid PlainItem> items;
 
-    public TopLevelItems(List<@Valid PlainItem> items) {
+    public TopLevelItems(List<PlainItem> items) {
         this.items = items;
     }
 

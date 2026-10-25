@@ -1,5 +1,6 @@
 package com.fillumina.typeannotation;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 
 /**
@@ -39,6 +40,44 @@ public class Enclosing {
 
         public Member(String name) {
             this.name = name;
+        }
+    }
+
+    /**
+     * An inner class that uses the instance it belongs to without exposing it: javac then keeps a
+     * reference to that instance, and nothing more, because a reference is not a property.
+     */
+    public class UsesEnclosing {
+
+        @NotBlank
+        public String name;
+
+        public UsesEnclosing(String name) {
+            this.name = name;
+        }
+
+        public String enclosingLabel() {
+            // reads the field of the class it is declared in, so javac keeps a reference to it
+            return label;   // Enclosing.this.label
+        }
+    }
+
+    /**
+     * An inner class that hands back the instance it belongs to, which makes of the enclosing instance
+     * a property of the item and puts it on the object graph.
+     */
+    public class ReachableMember {
+
+        @NotBlank
+        public String name;
+
+        public ReachableMember(String name) {
+            this.name = name;
+        }
+
+        @Valid
+        public Enclosing getEnclosing() {
+            return Enclosing.this;
         }
     }
 }

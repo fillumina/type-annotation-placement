@@ -16,7 +16,7 @@ public class MemberItemsWholeName {
 
     private final List<@Valid Enclosing.Member> items;
 
-    public MemberItemsWholeName(List<@Valid Enclosing.Member> items) {
+    public MemberItemsWholeName(List<Enclosing.Member> items) {
         this.items = items;
     }
 

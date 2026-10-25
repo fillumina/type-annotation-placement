@@ -14,7 +14,7 @@ public class StaticNestedItems {
 
     private final List<Enclosing.@Valid Nested> items;
 
-    public StaticNestedItems(List<Enclosing.@Valid Nested> items) {
+    public StaticNestedItems(List<Enclosing.Nested> items) {
         this.items = items;
     }
 
