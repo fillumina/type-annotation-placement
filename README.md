@@ -9,11 +9,53 @@ List<Enclosing.@Valid Member> list;
 Since Java 8 a type argument can carry an annotation, as in `List<@Valid Item>`, or between the two
 names of a nested type, as in `List<Enclosing.@Valid Member>`.
 
+## The old spelling, and the new one
+
+The difference between the two is Bean Validation's, not Java's. Java has allowed an annotation inside a
+type argument since 8; `@Valid` itself could not be written there before Bean Validation 2.0, which
+added `TYPE_USE` to its targets and defined what a cascade on the elements of a container means.
+
+Most code writes `@Valid` in front of the list, the spelling that existed before Jakarta Bean Validation
+2.0:
+
+```java
+@Valid
+private List<PhoneNumber> phoneNumbers;
+```
+
+Since version 2.0 the annotation can stand on the type argument instead, which is the spelling the
+specification prefers:
+
+```java
+private List<@Valid PhoneNumber> phoneNumbers;
+```
+
+Both validate the items, so what separates them is not what works but what is recommended and what a
+library warns about: Hibernate Validator deprecates the container spelling, and reports it as
+[`HV000271`](https://github.com/hibernate/hibernate-validator/blob/9.1.4.Final/engine/src/main/java/org/hibernate/validator/internal/util/logging/Log.java#L955).
+
+In its own words: [Jakarta Validation 3.1](https://jakarta.ee/specifications/bean-validation/3.1/jakarta-validation-spec-3.1.html),
+[§5.7.1 *Object graph validation*](https://jakarta.ee/specifications/bean-validation/3.1/jakarta-validation-spec-3.1.html#constraintdeclarationvalidationprocess-validationroutine-graphvalidation),
+says `@Valid` "dictates the Jakarta Validation implementation to apply recursively the Jakarta
+Validation routine on (each of) the associated object(s)".
+[§5.1.3 *Graph validation*](https://jakarta.ee/specifications/bean-validation/3.1/jakarta-validation-spec-3.1.html#constraintdeclarationvalidationprocess-requirements-graphvalidation)
+says that "As of Jakarta Validation 2.0, `@Valid` can be applied to the elements of any generic
+container by putting it to the type argument(s)", and its examples
+([§5.1.3.1](https://jakarta.ee/specifications/bean-validation/3.1/jakarta-validation-spec-3.1.html#constraintdeclarationvalidationprocess-requirements-graphvalidation-examples)) mark the type
+argument, `List<@Valid PhoneNumber>`, as the preferred spelling —
+[JSR 380](https://jcp.org/en/jsr/detail?id=380), Bean Validation 2.0 — while `@Valid` on the container
+is the "traditional style" that "continues to be supported"; writing it in both places is
+"discouraged", because the elements would be validated twice.
+[§5.5 *Container element constraints*](https://jakarta.ee/specifications/bean-validation/3.1/jakarta-validation-spec-3.1.html#constraintdeclarationvalidationprocess-containerelementconstraints)
+is where a constraint written on the elements of a list is defined.
+
 ## Why both positions exist
 
-A type annotation applies to the **simple name immediately after it**, so `@Foo A.B` annotates `A` and
-`A.@Foo B` annotates `B`. A type declared inside another therefore takes the annotation after the
-last dot, and that position is the same for a static nested class and for an inner class.
+On a type with a single name there is no choice to make: `List<@Valid PhoneNumber>` speaks about
+`PhoneNumber`. A type declared inside another carries two names, and there the position decides which
+is decorated: a type annotation applies to the **simple name immediately after it**, so `@Foo A.B`
+annotates `A` and `A.@Foo B` annotates `B`. The item's own name is the one after the last dot, and that
+position is the same for a static nested class and for an inner class.
 
 The same rule shows in a package-qualified name: `java.util.@Foo List` is legal, because the annotation
 stands before `List`, which is a class, while `@Foo java.util.List` is illegal, because the name it
@@ -416,38 +458,6 @@ item reports `items[0].name` and `items[0].enclosing.label`; validating the seco
 its element is not marked and the walk stops at the list before that property is reached.
 [`ReachableEnclosingTest`](src/test/java/com/fillumina/typeannotation/ReachableEnclosingTest.java) asserts
 both outcomes.
-
-## The type argument, and the container
-
-`@Valid` on a collection has two places to stand, and the specification prefers one of them.
-[Jakarta Validation 3.1](https://jakarta.ee/specifications/bean-validation/3.1/jakarta-validation-spec-3.1.html),
-[§5.7.1 *Object graph validation*](https://jakarta.ee/specifications/bean-validation/3.1/jakarta-validation-spec-3.1.html#constraintdeclarationvalidationprocess-validationroutine-graphvalidation),
-says `@Valid` "dictates the Jakarta Validation implementation to apply recursively the Jakarta
-Validation routine on (each of) the associated object(s)".
-[§5.1.3 *Graph validation*](https://jakarta.ee/specifications/bean-validation/3.1/jakarta-validation-spec-3.1.html#constraintdeclarationvalidationprocess-requirements-graphvalidation)
-sets out the same mechanism, and its examples
-([§5.1.3.1](https://jakarta.ee/specifications/bean-validation/3.1/jakarta-validation-spec-3.1.html#constraintdeclarationvalidationprocess-requirements-graphvalidation-examples)) mark the type
-argument, `List<@Valid PhoneNumber>`, as the preferred spelling as of version 2.0 —
-[JSR 380](https://jcp.org/en/jsr/detail?id=380), Bean Validation 2.0 — while `@Valid` on the container
-is the "traditional style" that "continues to be supported"; writing it in both places is
-"discouraged", because the elements would be validated twice.
-[§5.5 *Container element constraints*](https://jakarta.ee/specifications/bean-validation/3.1/jakarta-validation-spec-3.1.html#constraintdeclarationvalidationprocess-containerelementconstraints)
-is where a constraint written on the elements of a list is defined.
-
-Written out, the two are these:
-
-```java
-// the type argument: preferred since version 2.0
-private List<@Valid PhoneNumber> phoneNumbers;
-
-// the container: the traditional style, still supported
-@Valid
-private List<PhoneNumber> phoneNumbers;
-```
-
-Both validate the items, so what separates them is not what works but what is recommended and what a
-library warns about. Hibernate Validator deprecates the container spelling, and reports it as
-[`HV000271`](https://github.com/hibernate/hibernate-validator/blob/9.1.4.Final/engine/src/main/java/org/hibernate/validator/internal/util/logging/Log.java#L955).
 
 ## Why it exists
 
