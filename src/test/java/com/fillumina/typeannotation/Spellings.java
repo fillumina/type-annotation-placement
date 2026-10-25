@@ -15,11 +15,11 @@ public class Spellings {
     /** {@code TopLevelItems}: the annotation is on the type argument, which is the item. */
     private List<@Valid PlainItem> topLevelItems;
 
-    /** {@code MemberItemsLastSegment}: the annotation is on the inner class, which is the item. */
-    private List<Enclosing.@Valid Member> memberItemsLastSegment;
+    /** {@code InnerItemsLastSegment}: the annotation is on the inner class, which is the item. */
+    private List<Enclosing.@Valid Inner> innerItemsLastSegment;
 
-    /** {@code MemberItemsWholeName}: the annotation is on {@code Enclosing}, so nothing is validated. */
-    private List<@Valid Enclosing.Member> memberItemsWholeName;
+    /** {@code InnerItemsWholeName}: the annotation is on {@code Enclosing}, so nothing is validated. */
+    private List<@Valid Enclosing.Inner> innerItemsWholeName;
 
     /** {@code StaticNestedItems}: the annotation is between the enclosing class and the item. */
     private List<Enclosing.@Valid Nested> staticNestedItems;

@@ -14,19 +14,19 @@ import org.junit.jupiter.api.Test;
  * Where a type annotation on a qualified item type lands, with an annotation that means nothing:
  * {@code @Marker} is read by nobody, so nothing here depends on a validation library.
  *
- * <p>Both beans have the same item type, {@code Enclosing.Member}. Only the position of the annotation
+ * <p>Both beans have the same item type, {@code Enclosing.Inner}. Only the position of the annotation
  * changes, and with it the part of the type the annotation is attached to.
  */
 class MarkerPlacementTest {
 
     static class AfterTheDot {
 
-        List<Enclosing.@Marker Member> items;
+        List<Enclosing.@Marker Inner> items;
     }
 
     static class InFrontOfTheWholeName {
 
-        List<@Marker Enclosing.Member> items;
+        List<@Marker Enclosing.Inner> items;
     }
 
     static class Assigned {
@@ -39,7 +39,7 @@ class MarkerPlacementTest {
     void afterTheDotTheMarkerIsOnTheItem() throws Exception {
         AnnotatedType item = itemTypeOf(AfterTheDot.class);
 
-        assertEquals(Enclosing.Member.class, item.getType());
+        assertEquals(Enclosing.Inner.class, item.getType());
         assertEquals(List.of(Marker.class), annotationTypes(item));
         assertEquals(List.of(), annotationTypes(item.getAnnotatedOwnerType()));
     }
@@ -48,7 +48,7 @@ class MarkerPlacementTest {
     void inFrontOfTheWholeNameTheMarkerIsOnTheEnclosingClass() throws Exception {
         AnnotatedType item = itemTypeOf(InFrontOfTheWholeName.class);
 
-        assertEquals(Enclosing.Member.class, item.getType());
+        assertEquals(Enclosing.Inner.class, item.getType());
         assertEquals(List.of(), annotationTypes(item), "the item carries nothing");
         assertEquals(List.of(Marker.class), annotationTypes(item.getAnnotatedOwnerType()));
     }
@@ -78,7 +78,7 @@ class MarkerPlacementTest {
 
     private static List<Class<? extends Annotation>> annotationTypes(AnnotatedType type) {
         return Arrays.stream(type.getAnnotations())
-                .map(Annotation::annotationType)
+                .<Class<? extends Annotation>>map(Annotation::annotationType)
                 .toList();
     }
 }

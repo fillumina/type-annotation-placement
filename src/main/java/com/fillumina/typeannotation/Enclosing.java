@@ -33,12 +33,12 @@ public class Enclosing {
     }
 
     /** An inner class: it needs an instance of {@code Enclosing} to exist. */
-    public class Member {
+    public class Inner {
 
         @NotBlank
         public String name;
 
-        public Member(String name) {
+        public Inner(String name) {
             this.name = name;
         }
     }
@@ -66,12 +66,12 @@ public class Enclosing {
      * An inner class that hands back the instance it belongs to, which makes of the enclosing instance
      * a property of the item and puts it on the object graph.
      */
-    public class ReachableMember {
+    public class ReachableInner {
 
         @NotBlank
         public String name;
 
-        public ReachableMember(String name) {
+        public ReachableInner(String name) {
             this.name = name;
         }
 

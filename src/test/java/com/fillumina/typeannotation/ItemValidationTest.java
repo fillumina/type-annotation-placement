@@ -60,8 +60,8 @@ class ItemValidationTest {
     void theItemsOfAnInnerTypeAreValidatedByTheAnnotationBeforeTheItemName() {
         Enclosing enclosing = new Enclosing("");
         assertEquals(List.of(ITEM_NAME),
-                pathsOf(validator.validate(new MemberItemsLastSegment(
-                        List.of(enclosing.new Member(""))))));
+                pathsOf(validator.validate(new InnerItemsLastSegment(
+                        List.of(enclosing.new Inner(""))))));
     }
 
     /**
@@ -72,8 +72,8 @@ class ItemValidationTest {
     void theItemsOfAnInnerTypeAreNotValidatedByTheAnnotationBeforeTheEnclosingName() {
         Enclosing enclosing = new Enclosing("");
         assertEquals(List.of(),
-                pathsOf(validator.validate(new MemberItemsWholeName(
-                        List.of(enclosing.new Member(""))))));
+                pathsOf(validator.validate(new InnerItemsWholeName(
+                        List.of(enclosing.new Inner(""))))));
     }
 
     /**
@@ -86,8 +86,8 @@ class ItemValidationTest {
         Enclosing enclosing = new Enclosing("");
 
         assertEquals(List.of(),
-                pathsOf(validator.validate(new MemberItemsWholeName(
-                        List.of(enclosing.new Member(""))))),
+                pathsOf(validator.validate(new InnerItemsWholeName(
+                        List.of(enclosing.new Inner(""))))),
                 "the annotation marks the enclosing class and reaches nothing");
     }
 
@@ -100,8 +100,8 @@ class ItemValidationTest {
         Enclosing enclosing = new Enclosing("");
 
         assertEquals(List.of(ITEM_NAME),
-                pathsOf(validator.validate(new MemberItemsLastSegment(
-                        List.of(enclosing.new Member(""))))),
+                pathsOf(validator.validate(new InnerItemsLastSegment(
+                        List.of(enclosing.new Inner(""))))),
                 "cascading follows the object graph, and the enclosing instance is not on it");
     }
 
@@ -127,11 +127,11 @@ class ItemValidationTest {
                 pathsOf(validator.validate(new StaticNestedItems(
                         List.of(new Enclosing.Nested("ok"))))));
         assertEquals(List.of(),
-                pathsOf(validator.validate(new MemberItemsLastSegment(
-                        List.of(enclosing.new Member("ok"))))));
+                pathsOf(validator.validate(new InnerItemsLastSegment(
+                        List.of(enclosing.new Inner("ok"))))));
         assertEquals(List.of(),
-                pathsOf(validator.validate(new MemberItemsWholeName(
-                        List.of(enclosing.new Member("ok"))))));
+                pathsOf(validator.validate(new InnerItemsWholeName(
+                        List.of(enclosing.new Inner("ok"))))));
     }
 
     /**
@@ -148,10 +148,10 @@ class ItemValidationTest {
         AnnotatedType nested = itemTypeOf(StaticNestedItems.class);
         assertValid(nested);
 
-        AnnotatedType innerLastSegment = itemTypeOf(MemberItemsLastSegment.class);
+        AnnotatedType innerLastSegment = itemTypeOf(InnerItemsLastSegment.class);
         assertValid(innerLastSegment);
 
-        AnnotatedType innerWholeName = itemTypeOf(MemberItemsWholeName.class);
+        AnnotatedType innerWholeName = itemTypeOf(InnerItemsWholeName.class);
         assertEquals(List.of(), List.of(innerWholeName.getAnnotations()),
                 "the item itself carries no annotation");
         assertValid(innerWholeName.getAnnotatedOwnerType());

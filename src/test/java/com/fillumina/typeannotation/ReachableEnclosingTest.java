@@ -30,8 +30,8 @@ class ReachableEnclosingTest {
     void theItemIsValidatedAndSoIsTheEnclosingItHandsBack() {
         Enclosing enclosing = new Enclosing("");
 
-        assertEquals(ITEM_AND_ENCLOSING, pathsOf(validator.validate(new ReachableMemberItems(
-                List.of(enclosing.new ReachableMember(""))))));
+        assertEquals(ITEM_AND_ENCLOSING, pathsOf(validator.validate(new ReachableInnerItems(
+                List.of(enclosing.new ReachableInner(""))))));
     }
 
     /**
@@ -42,8 +42,8 @@ class ReachableEnclosingTest {
     void theWholeNameSpellingDoesNotReachTheEnclosingInstanceEvenAsAProperty() {
         Enclosing enclosing = new Enclosing("");
 
-        assertEquals(List.of(), pathsOf(validator.validate(new ReachableMemberItemsWholeName(
-                List.of(enclosing.new ReachableMember(""))))));
+        assertEquals(List.of(), pathsOf(validator.validate(new ReachableInnerItemsWholeName(
+                List.of(enclosing.new ReachableInner(""))))));
     }
 
     /**
@@ -62,9 +62,9 @@ class ReachableEnclosingTest {
      */
     @Test
     void onlyAClassThatUsesItsEnclosingInstanceKeepsAReferenceToIt() {
-        assertFalse(keepsAnEnclosingReference(Enclosing.Member.class));
+        assertFalse(keepsAnEnclosingReference(Enclosing.Inner.class));
         assertTrue(keepsAnEnclosingReference(Enclosing.UsesEnclosing.class));
-        assertTrue(keepsAnEnclosingReference(Enclosing.ReachableMember.class));
+        assertTrue(keepsAnEnclosingReference(Enclosing.ReachableInner.class));
     }
 
     private static boolean keepsAnEnclosingReference(Class<?> type) {

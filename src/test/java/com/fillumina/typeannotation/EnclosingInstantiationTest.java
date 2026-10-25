@@ -11,9 +11,9 @@ import org.junit.jupiter.api.Test;
  * The two creations the README shows: a static nested class is created from the name of the class that
  * holds it, an inner class from an instance of that class.
  *
- * <p>The second one is the only spelling that exists. {@code new Member("item")} does not compile
+ * <p>The second one is the only spelling that exists. {@code new Inner("item")} does not compile
  * outside an {@code Enclosing}, which is why an inner class is written {@code enclosing.new
- * Member("item")}.
+ * Inner("item")}.
  */
 class EnclosingInstantiationTest {
 
@@ -30,10 +30,10 @@ class EnclosingInstantiationTest {
     void anInnerClassIsCreatedFromAnInstanceOfTheEnclosingClass() {
         Enclosing enclosing = new Enclosing("label");
 
-        Enclosing.Member member = enclosing.new Member("item");
+        Enclosing.Inner inner = enclosing.new Inner("item");
 
-        assertFalse(Modifier.isStatic(Enclosing.Member.class.getModifiers()),
+        assertFalse(Modifier.isStatic(Enclosing.Inner.class.getModifiers()),
                 "an inner class is created through an instance of its enclosing class");
-        assertEquals("item", member.name);
+        assertEquals("item", inner.name);
     }
 }
